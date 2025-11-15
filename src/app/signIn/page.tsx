@@ -2,13 +2,24 @@
 
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { FaGoogle } from 'react-icons/fa';
+import { FaGoogle, FaGithub } from 'react-icons/fa';
 
 export default function LoginPage() {
   const router = useRouter();
 
   const handleGoogleSignIn = async () => {
     const result = await signIn('google', {
+      callbackUrl: '/dashboard',
+      redirect: false,
+    });
+
+    if (result?.ok) {
+      router.push('/dashboard');
+    }
+  };
+
+  const handleGitHubSignIn = async () => {
+    const result = await signIn('github', {
       callbackUrl: '/dashboard',
       redirect: false,
     });
@@ -28,10 +39,19 @@ export default function LoginPage() {
 
         <button
           onClick={handleGoogleSignIn}
-          className="w-full bg-gray-500 text-white py-2 px-4 rounded hover:bg-black transition flex items-center justify-center gap-2"
+          className="w-full bg-gray-500 text-white py-2 px-4 rounded hover:bg-black transition flex items-center justify-center gap-2 mb-3"
         >
           <FaGoogle />
           Continue with Google
+        </button>
+
+        {/* GitHub */}
+        <button
+          onClick={handleGitHubSignIn}
+          className="w-full bg-gray-900 text-white py-2 px-4 rounded hover:bg-black transition flex items-center justify-center gap-2"
+        >
+          <FaGithub />
+          Continue with GitHub
         </button>
 
       </div>
