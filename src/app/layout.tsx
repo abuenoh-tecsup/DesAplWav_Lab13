@@ -25,31 +25,46 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   const session = await getServerSession(authOptions);
+
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-100
+                    min-h-screen flex flex-col`}
       >
-        <nav className="w-full bg-black shadow-sm">
-          <div className="mx-auto px-6 py-4 flex items-center justify-between">
-            <Link href="/" className="text-xl font-semibold">
+        {/* NAVBAR */}
+        <nav className="w-full bg-black h-20 shadow-sm border-b border-gray-200">
+          <div className="h-full mx-auto px-6 flex items-center justify-between max-w-6xl">
+
+            {/* LOGO */}
+            <Link
+              href="/"
+              className="text-xl font-semibold tracking-tight hover:text-blue-300 transition"
+            >
               MyAuthApp
             </Link>
 
-            <ul className="flex items-center justify-center gap-6 text-sm">
+            <ul className="flex items-center gap-6 text-sm text-gray-700">
+
               <li>
-                <Link href="/dashboard" className="hover:text-gray-600">
+                <Link
+                  href="/dashboard"
+                  className="text-white hover:text-blue-300 transition"
+                >
                   Dashboard
                 </Link>
               </li>
 
               {session?.user && (
                 <li>
-                  <Link href="/profile" className="hover:text-gray-600">
+                  <Link
+                    href="/profile"
+                    className="text-white hover:text-blue-300 transition"
+                  >
                     Profile
                   </Link>
                 </li>
@@ -68,7 +83,7 @@ export default async function RootLayout({
                     width={100}
                     src={session?.user?.image}
                     alt="Profile"
-                    className="w-10 h-10 rounded-full"
+                    className="w-10 h-10 rounded-full border border-gray-300 shadow-sm"
                   />
                 </li>
               )}
@@ -76,8 +91,13 @@ export default async function RootLayout({
           </div>
         </nav>
 
+        {/* CONTENIDO */}
         <Provider session={session}>
-          <main>{children}</main>
+          <main className="flex-1 flex">
+            <div className="w-full mx-auto flex flex-col min-h-full">
+              {children}
+            </div>
+          </main>
         </Provider>
       </body>
     </html>
