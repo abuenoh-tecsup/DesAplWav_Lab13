@@ -14,9 +14,12 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  name      String?
-  email     String?  @unique
-  password  String?  // solo para credentials
-  image     String?
+  id                   String   @id @default(cuid())
+  name                 String?
+  email                String?  @unique
+  password             String?  // solo para credentials
+  image                String?
+
+  failedLoginAttempts  Int      @default(0)
+  lockUntil            DateTime?
 }

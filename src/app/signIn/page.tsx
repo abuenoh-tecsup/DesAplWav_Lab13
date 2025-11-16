@@ -2,11 +2,12 @@
 
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { FaGoogle, FaGithub } from 'react-icons/fa';
 
 export default function SignInPage() {
-  const router = useRouter();
+  const search = useSearchParams();
+  const error = search.get("error");
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -17,17 +18,8 @@ export default function SignInPage() {
     await signIn("credentials", {
       email,
       password,
-      callbackUrl: "/dashboard",
+      callbackUrl: "/dashboard",   // sin redirect:false
     });
-  };
-
-
-  const handleGoogleSignIn = async () => {
-    await signIn('google', { callbackUrl: '/dashboard' });
-  };
-
-  const handleGitHubSignIn = async () => {
-    await signIn('github', { callbackUrl: '/dashboard' });
   };
 
   return (
@@ -37,6 +29,19 @@ export default function SignInPage() {
         <h1 className="text-2xl text-gray-800 font-bold mb-6 text-center">
           Sign In
         </h1>
+
+        {/* MENSAJES DE ERROR */}
+        {error === "AccountLocked" && (
+          <p className="text-red-600 mb-4 text-center">
+            Tu cuenta está bloqueada temporalmente. Intenta más tarde.
+          </p>
+        )}
+
+        {error === "CredentialsSignin" && (
+          <p className="text-red-600 mb-4 text-center">
+            Credenciales incorrectas.
+          </p>
+        )}
 
         {/* Credentials */}
         <form onSubmit={handleCredentialsSignIn} className="mb-6">
@@ -64,30 +69,21 @@ export default function SignInPage() {
           </button>
         </form>
 
-        {/* Google */}
         <button
-          onClick={handleGoogleSignIn}
+          onClick={() => signIn('google', { callbackUrl: '/dashboard' })}
           className="w-full bg-gray-500 text-white py-2 px-4 rounded hover:bg-black transition flex items-center justify-center gap-2 mb-3"
         >
           <FaGoogle />
           Continue with Google
         </button>
 
-        {/* GitHub */}
         <button
-          onClick={handleGitHubSignIn}
+          onClick={() => signIn('github', { callbackUrl: '/dashboard' })}
           className="w-full bg-gray-900 text-white py-2 px-4 rounded hover:bg-black transition flex items-center justify-center gap-2"
         >
           <FaGithub />
           Continue with GitHub
         </button>
-
-        <p className="mt-6 text-center text-sm">
-          Don’t have an account?{' '}
-          <a href="/register" className="text-blue-600 underline">
-            Register
-          </a>
-        </p>
 
       </div>
     </div>
